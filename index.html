@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+        <title> Waterloo tests </title>	
+		<script src="waterloo/core.js" type="text/javascript" charset="utf-8"></script>
+		<script src="waterloo/modular.js" type="text/javascript" charset="utf-8"></script>
+		<script src="waterloo/module.js" type="text/javascript" charset="utf-8"></script>
+		<script src="waterloo/objectactivator.js" type="text/javascript" charset="utf-8"></script>
+		<script src="waterloo/image.js" type="text/javascript" charset="utf-8"></script>
+		<script src="waterloo/animation.js" type="text/javascript" charset="utf-8"></script>
+		<script src="waterloo/Layer.js" type="text/javascript" charset="utf-8"></script>
+		<script src="waterloo/Mouse.js" type="text/javascript" charset="utf-8"></script>		
+		<script src="waterloo/RenderEngine.js" type="text/javascript" charset="utf-8"></script>
+		<script src="waterloo/ImageRender.js" type="text/javascript" charset="utf-8"></script>
+		<script src="waterloo/LayerMaker.js" type="text/javascript" charset="utf-8"></script>
+		<script src="waterloo/mouselayer.js" type="text/javascript" charset="utf-8"></script>
+		<script src="waterloo/layerclear.js" type="text/javascript" charset="utf-8"></script>
+		<script src="waterloo/layervalidator.js" type="text/javascript" charset="utf-8"></script>
+		<script src="waterloo/AnimationRender.js" type="text/javascript" charset="utf-8"></script>
+		<script src="waterloo/debug_diagnostics.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript" charset="utf-8">
+			
+			Waterloo.Diagnostics.TimeProfileManager.startProfile('GraphicsTest');
+			Waterloo.Diagnostics.TimeProfileManager.applyToNamespace(Waterloo);
+			WE._logmode = true;
+			var mg =  WE.xcreate({
+					tcode:"image",
+					src:"images/gyamon_down.gif"});			
+			var mg2 =  WE.xcreate({
+					tcode:"image",
+					src:"images/coolskel.gif"});
+			var anim = WE.xcreate({
+				tcode:'animation',
+				defaults:{
+					src:"images/gyamon_idle.gif",
+					origin:MERGE({
+						cellWidth:47,
+						cellHeight:65,
+						celly:0
+					}),
+					delay: 110
+				},
+				frames:[
+					{
+						origin:{cellx:0}
+					},
+					{
+						origin:{cellx:1}
+					},
+					{
+						origin:{cellx:2}
+					},
+					{
+						origin:{cellx:3}
+					},
+					{
+						origin:{cellx:4}
+					},
+					{
+						origin:{cellx:5}
+					},
+					{
+						origin:{cellx:6}
+					},
+					{
+						origin:{cellx:7}
+					}
+				]
+			});
+			var anim_move = WE.xcreate({
+				tcode:'animation',
+				defaults:{
+					src:"images/gyamon_move.gif",
+					origin:MERGE({
+						cellWidth:318/6,
+						cellHeight:64,
+						celly:0
+					}),
+					delay: 70
+				},
+				frames:[
+					{
+						origin:{cellx:0}
+					},
+					{
+						origin:{cellx:1}
+					},
+					{
+						origin:{cellx:2}
+					},
+					{
+						origin:{cellx:3}
+					},
+					{
+						origin:{cellx:4}
+					},
+					{
+						origin:{cellx:5}
+					}
+				]
+			});
+			var anim_sit = WE.xcreate({
+				tcode:'animation',
+				defaults:{
+					src:"images/gyamon_down.gif",
+					origin:MERGE({
+						cellWidth:94/2,
+						cellHeight:56,
+						celly:0
+					}),
+					delay: 1000
+				},
+				frames:[
+					{
+						origin:{cellx:0},
+						frameShY: -8
+					},
+					{
+						origin:{cellx:1},
+						frameShY: -8
+					}
+				]
+			});
+			
+			window.requestAnimFrame = (function(callback) {
+				return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame ||
+				function(callback) {
+				  window.setTimeout(callback, 1000 / 60);
+				};
+			  })();
+			setTimeout(function(){
+				//alert('start');
+				var xxx = WE.xcreate({tcode:"renderengine+layermaker2d+imagerender+mouselayermaker+layerclearer+layervalidator+animationrender", domId:'pp'});
+				xxx.addLayer({tcode:'layer', width:1000, height:1000});
+				xxx.addLayer({tcode:'layer', width:1000, height:1000});
+				xxx.addLayer({tcode:'layer', width:1000, height:1000});
+				var cursorimage = WE.xcreate({
+					tcode:"animationinstance",
+					animation: anim,
+					xPointerOffset:0,
+					yPointerOffset:0
+					});			
+				xxx.addLayer({tcode:'mouselayer', width:1000, height:1000, cursors:{custom:cursorimage}});
+				//xxx._layers[3].setCursor('custom');
+				for(var x = 0; x<1; x++){
+					var image = WE.xcreate({
+					tcode:"animationinstance",
+					x:50*x,
+					y:0,
+					posx:50*x,
+					posy:0,
+					msy: 80,
+					animation:anim,
+					onmove: false,
+					sitting: false
+					});			
+					xxx._layers[2].objects.push(image);
+					var image2 = WE.xcreate({
+					tcode:"animationinstance",
+					x:200+50*x,
+					y:200,
+					posx:200+50*x,
+					posy:200,
+					msy: 0,
+					animation:anim,
+					onmove: false,
+					sitting: false
+					});			
+					xxx._layers[1].objects.push(image2);
+					for(var y=0; y<1;y++){
+						var image3 = WE.xcreate({
+						tcode:"animationinstance",
+						x:0+(y/10)*60,
+						y:0+(y%10)*60,
+						posx:600,
+						posy:600,
+						msy: -80,
+						animation:anim_sit
+						});			
+						xxx._layers[0].objects.push(image3);
+					}
+				}
+				window.globc = 0;
+				window.lastmouseclickx = 400;
+				window.lastmouseclicky = 400;
+				xxx._layers[3].on('MouseClick', function(m,canv, ev){
+					window.lastmouseclickx = m.mouseX;
+					window.lastmouseclicky = m.mouseY;
+					window.ordered = true;
+				});
+				var rnd = function rnd(){
+					xxx.renderAll();	
+					
+					requestAnimFrame(rnd);
+				}
+				Waterloo.Diagnostics.TimeProfileManager.runProfile();
+				rnd();
+				
+				var actions = function actions(){
+					window.globc++;					
+					for(var i=1;i<3;i++)
+						for(var k=0;k<1;k++){
+							var obj = xxx._layers[i].objects[k];
+							if(!obj) continue;
+							var dx = obj.x - window.lastmouseclickx;
+							var dy = obj.y+obj.msy - window.lastmouseclicky;
+							ds = Math.sqrt(dx*dx+dy*dy);
+							//xxx._layers[i].invalidate();
+							if(Math.abs(ds)>6){//&&(i!=2||Math.abs(ds)>200)){
+								//if(window.globc%2!=0)
+								obj.sitting = false;
+								if(!obj.onmove){
+									obj.onmove = true;
+									obj.animation = anim_move;
+								}
+								dx = -dx/ds;
+								dy = -dy/ds;
+								
+								obj.posx = obj.posx +dx*6;
+								obj.posy = obj.posy +dy*6;
+								obj.x = Math.floor(obj.posx);
+								obj.y = Math.floor(obj.posy);
+							}
+							else{
+								if(obj.onmove){
+									obj.onmove = false;
+									obj.animation = anim;
+								}
+								if(window.ordered){
+									if(!obj.sitting){
+									obj.animation = anim_sit;
+									obj.sitting = true;
+									}
+									else
+									{obj.animation = anim;
+									obj.sitting = false;									
+									}
+								}
+							}
+						}
+					window.ordered = false;
+					setTimeout(actions, 20);
+				};
+				
+				actions();
+				window.xxx = xxx;	
+				//alert('finish');
+			},100);
+			
+			
+			
+		</script>
+    </head>
+    <body>
+        <div id='pp'></div>
+    </body>
+</html>

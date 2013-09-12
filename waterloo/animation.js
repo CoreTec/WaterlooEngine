@@ -51,7 +51,7 @@ WE.define('Waterloo.Graphics.AnimationInstance', Waterloo.WaterlooClass,{
 		else{
 			mg = this.animation.getFrame(dt);
 			this._curframe = mg;
-			this._nextframetime = -1;
+			this._nextframetime = 0;
 		}
 		var result = Waterloo.Graphics.ObjectActivator.createInstance(mg);
 		result.x = this.x-(mg.frameShX==null?0:mg.frameShX);

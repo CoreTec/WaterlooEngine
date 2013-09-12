@@ -5,6 +5,7 @@
 WE.define('Waterloo.Graphics.Layer', Waterloo.WaterlooClass,{
 	tcode: 'layer',
 	objects:[],
+	id: '',
 	canvas: null,
 	engine: null,
 	defaultContext: null,

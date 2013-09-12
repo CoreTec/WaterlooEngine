@@ -20,10 +20,9 @@
 		<script src="waterloo/AnimationRender.js" type="text/javascript" charset="utf-8"></script>
 		<script src="waterloo/debug_diagnostics.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript" charset="utf-8">
-			alert('start');
-			Waterloo.Diagnostics.TimeProfileManager.startProfile('GraphicsTest');
-			Waterloo.Diagnostics.TimeProfileManager.applyToNamespace(Waterloo);
-			WE._logmode = true;
+			//Waterloo.Diagnostics.TimeProfileManager.startProfile('GraphicsTest');
+			//Waterloo.Diagnostics.TimeProfileManager.applyToNamespace(Waterloo);
+			//WE._logmode = true;
 			var mg =  WE.xcreate({
 					tcode:"image",
 					src:"images/gyamon_down.gif"});			
@@ -123,6 +122,8 @@
 				]
 			});
 			
+			var speed = 10;
+			
 			window.requestAnimFrame = (function(callback) {
 				return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame ||
 				function(callback) {
@@ -168,7 +169,7 @@
 					sitting: false
 					});			
 					xxx._layers[1].objects.push(image2);
-					for(var y=0; y<1;y++){
+					for(var y=0; y<100;y++){
 						var image3 = WE.xcreate({
 						tcode:"animationinstance",
 						x:0+(y/10)*60,
@@ -194,18 +195,39 @@
 					
 					requestAnimFrame(rnd);
 				}
-				Waterloo.Diagnostics.TimeProfileManager.runProfile();
+				//Waterloo.Diagnostics.TimeProfileManager.runProfile();
 				rnd();
 				
 				var actions = function actions(){
 					window.globc++;					
-					for(var i=1;i<3;i++)
+					for(var i=0;i<4;i++)
 						for(var k=0;k<1;k++){
 							var obj = xxx._layers[i].objects[k];
+							
+							var lr = xxx._layers[i];
+							var followobj = xxx._layers[1].objects[0];
+							lr.pnsx = lr.pnsx?lr.pnsx:0;
+							lr.pnsy = lr.pnsy?lr.pnsy:0;
+							var dx = followobj.x - lr.pnsx;
+							var dy = followobj.y - lr.pnsy;
+							var dsx = Math.sqrt(dx*dx+dy*dy);
+							dsx = Math.max(dsx, speed);
+							var difx = speed*dx/dsx;
+							var dify = speed*dy/dsx;
+							lr.pnsx=lr.pnsx+difx;
+							lr.pnsy=lr.pnsy+dify;
+							lr.shiftX = lr.pnsx-500;
+							lr.shiftY = lr.pnsy-500;
+							
+							if(i==0) continue;
+							if(i==3) continue;
 							if(!obj) continue;
 							var dx = obj.x - window.lastmouseclickx;
 							var dy = obj.y+obj.msy - window.lastmouseclicky;
 							ds = Math.sqrt(dx*dx+dy*dy);
+							
+							
+							
 							//xxx._layers[i].invalidate();
 							if(Math.abs(ds)>6){//&&(i!=2||Math.abs(ds)>200)){
 								//if(window.globc%2!=0)

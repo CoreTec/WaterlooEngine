@@ -57,10 +57,10 @@ WE.define('Waterloo.Mouse', Waterloo.Graphics.Layer,{
 	
 	_mouseMove: function(canv, ev){
 		var offset = canv.getBoundingClientRect();
-		this.mouseX = ev.pageX - offset.left;
-		this.mouseY = ev.pageY - offset.top;
-		this.cursorobj.x = this.mouseX-this.cursorobj.xPointerOffset|0;
-		this.cursorobj.y = this.mouseY-this.cursorobj.yPointerOffset|0;
+		this.mouseX = ev.pageX - offset.left + this.shiftX;
+		this.mouseY = ev.pageY - offset.top + this.shiftY;
+		this.cursorobj.x = this.mouseX-this.cursorobj.xPointerOffset|0 - this.shiftX;
+		this.cursorobj.y = this.mouseY-this.cursorobj.yPointerOffset|0 - this.shiftY;
 		this.onMouseMove(canv, ev);
 	},	
 	
@@ -72,8 +72,8 @@ WE.define('Waterloo.Mouse', Waterloo.Graphics.Layer,{
 		var offset = canv.getBoundingClientRect();
 		ev.preventDefault();
 		this.pressed = true;
-		this.lastDownX = ev.pageX - offset.left;
-		this.lastDownY = ev.pageY - offset.top;
+		this.lastDownX = ev.pageX - offset.left - this.shiftX;
+		this.lastDownY = ev.pageY - offset.top - this.shiftY;
 		this.onMouseDown(canv,ev);
 	},
 	

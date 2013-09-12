@@ -1,7 +1,7 @@
 /* Simple JavaScript Inheritance
  * By John Resig http://ejohn.org/
  * MIT Licensed.
- * Modified by Andrii Yukhymchak
+ * Heavily modified by Andrii Yukhymchak
  */
 // Inspired by base2 and Prototype
 (function(){
@@ -221,7 +221,7 @@
 		}
 		config.caller = this;
 		var xc = WE.xcreate(config);
-		if(xc.exports)
+		if(xc&&xc.exports)
 			WE.apply(this, xc.exports);
 		return this;
 	}
@@ -463,11 +463,17 @@
 		if(pcode==-1){
 			var ctc = this.cache[tcode];
 			if(ctc){
-				if(ctc.f)
+				if(ctc.f){
+					if(ctc.f._origin)
+						return ctc.f.apply(ctc.f._origin, config);
 					return ctc.f(config);
+				}
 				if(ctc.c){
-					if(ctc.c.singleton)
+					if(ctc.c.singleton){
+						if(ctc.c.applyConfig)
+							return ctc.c.applyConfig(config);
 						return ctc.c;
+					}
 					return new ctc.c(config);
 				}
 			}
@@ -482,6 +488,8 @@
 				cls = null;
 			if(cls!=null){
 				this.cache[tcode] = {f:cls};
+				if(cls._origin)
+					return cls.apply(cls._origin, config);
 				return cls(config);
 			}
 			dtcode = 'Waterloo.X.'+tcode;
@@ -490,8 +498,11 @@
 				throw 'To load class through tcode you need it to be registered in Waterloo.X namespace';
 				
 			this.cache[tcode] = {c:cls};		
-			if(cls.singleton)
+			if(cls.singleton){
+				if(cls.applyConfig)
+					return cls.applyConfig(config);
 				return cls;
+			}
 			return new cls(config);
 		}
 		
@@ -614,6 +625,20 @@
 			return res;
 		}
 		return ret;
+	},
+	makeTCode:function(tcode, obj, sender){
+		if(typeof obj == "function"){
+			if(sender!=null)
+				obj._origin = sender;
+			Waterloo.F.registerClass(tcode, obj);
+			return;
+		}
+		if(typeof obj =="string"){
+			this.setTcode(tcode, obj);
+			return;
+		}
+		
+		Waterloo.X.registerClass(tcode,obj);
 	}
   });
   this.WaterlooEngine = new this.WaterlooEngine;

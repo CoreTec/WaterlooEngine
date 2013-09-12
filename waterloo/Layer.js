@@ -61,14 +61,20 @@ WE.define('Waterloo.Graphics.Layer', Waterloo.WaterlooClass,{
 	
 	executeOver: function(f, contextName){
 		f(contextName?this._cachecanvas.createContext(contextName):this._cachecontext, this.engine, this);
-		(contextName?this.canvas.createContext(contextName):this.defaultContext).drawImage(this._cachecanvas.canvas,0,0);
+		var ctxx = (contextName?this.canvas.createContext(contextName):this.defaultContext);
+		//ctxx.translate(-this.shiftX, -this.shiftY);
+		ctxx.drawImage(this._cachecanvas.canvas,0,0, this.width, this.height, -this.shiftX, -this.shiftY, this.width, this.height);
+		//ctxx.translate(this.shiftX, this.shiftY);
 	},
 	executeAllOver: function(f, contextName){
 		var ctx = contextName?this._cachecanvas.createContext(contextName):this._cachecontext;
 		for(var x in f){
 			f[x](ctx, this.engine, this);
 		}
-		(contextName?this.canvas.createContext(contextName):this.defaultContext).drawImage(this._cachecanvas.canvas,0,0);
+		var ctxx = (contextName?this.canvas.createContext(contextName):this.defaultContext);
+		//ctxx.translate(-this.shiftX, -this.shiftY);
+		ctxx.drawImage(this._cachecanvas.canvas,0,0, this.width, this.height, -this.shiftX, -this.shiftY, this.width, this.height);
+		//ctxx.translate(this.shiftX, this.shiftY);
 	},
 	invalidate: function(){
 		this._needsRedraw = true;

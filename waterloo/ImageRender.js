@@ -7,10 +7,10 @@ WE.define('Waterloo.Graphics.ImageRender', Waterloo.Module,{
 		var layer = _input.layer;
 		var origin = image.getOrigin();
 		//check if in bounding rect
-		var drawtox = image.x-layer.shiftX;
-		var drawtoy = image.y-layer.shiftX;
-		if(drawtox+image.width<0||drawtoy+image.height<0) return;
-		if(drawtox>layer.width||drawtoy>layer.height) return;
+		var drawtox = image.x;//-layer.shiftX;
+		var drawtoy = image.y;//-layer.shiftY;
+		//if(drawtox+image.width<0||drawtoy+image.height<0) return;
+		//if(drawtox>layer.width||drawtoy>layer.height) return;
 		_output.todo.push(
 			function(ctx,engine,layer){
 				var origin = image.getOrigin();

@@ -114,7 +114,7 @@ WE.define('Waterloo.Graphics.Canvas', Waterloo.WaterlooClass,{
 	},
 	
 	createContext: function(name){
-		return this.canvas.getContext(name);
+		return Waterloo.Graphics.ContextManager.createContext(this.canvas,name);
 	},
 	
 	appendTo: function(control){
@@ -122,3 +122,27 @@ WE.define('Waterloo.Graphics.Canvas', Waterloo.WaterlooClass,{
 			control.appendChild(this.canvas);
 	}
 });
+
+WE.define('Waterloo.Graphics.ContextManager', Waterloo.WaterlooClass,{
+	tcode:'contextmanager',
+	singleton: true,
+	contextFactories: MERGE({}),
+	createContext: function(canvas, context){
+		var cf = this.contextFactories[context];
+		if(cf==null) return null;
+		return cf(canvas);
+	}
+});
+
+WE.define('Waterloo.Graphics.Context2d', Waterloo.WaterlooClass,{
+	tcode:'context2d',
+	exports:{
+		contextFactories:{
+			'2d': function(canvas){
+				return canvas.getContext('2d');
+			}
+		}
+	}
+});
+
+WE.xcreate({tcode:'contextmanager+context2d'});

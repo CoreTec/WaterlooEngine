@@ -32,6 +32,7 @@ WE.define('Waterloo.Graphics.ImageRender', Waterloo.Module,{
 		for(var x in objs){
 			if(!(objs[x] instanceof Waterloo.Graphics.ImageInstance)) continue;
 			obl[lr.id].push(objs[x]);
+			lr.objects.push(objs[x]);
 		}		
 	},
 	
@@ -50,8 +51,8 @@ WE.define('Waterloo.Graphics.ImageRender', Waterloo.Module,{
 		
 		_output.todo.push(
 			function(ctx,engine,layer){
-				for(var x in msg){
-					var xx = msg[x];
+				for(var x in mgs){
+					var xx = mgs[x];
 					ctx.drawImage (xx.image.getImage(), 
 											 xx.origin.x , xx.origin.y , xx.origin.width, xx.origin.height,
 											 xx.drawtox, xx.drawtoy, xx.image.width, xx.image.height);

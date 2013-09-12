@@ -5,10 +5,12 @@ WE.define('Waterloo.Graphics.RenderEngine', Waterloo.Modular,{
 	_prevframe: 0,
 	init: function(config){
 		this.action('Render', {todo:[]});
+		this.action('RenderLayer', {todo:[]});
 		this.action('DrawStart', {todo:[]});
 		this.action('BeforeDrawStart', {});
 		this.action('DrawEnd', {todo:[]});
 		this.action('MakeLayer', {layers:[]});
+		this.action('AddObjectsToLayer', {});
 		this.action('Start', {});
 		this._dom = document.getElementById(config.domId);
 	},
@@ -20,10 +22,7 @@ WE.define('Waterloo.Graphics.RenderEngine', Waterloo.Modular,{
 	
 	renderLayer: function(layer){
 		var todo = [];
-		for(var x in layer.objects){
-			var p = layer.objects[x];
-			WE.apply(todo, this.Render({item:p, layer:layer}).todo);
-		}
+		WE.apply(todo, this.RenderLayer({layer:layer}).todo);
 		return todo;
 	},
 	

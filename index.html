@@ -156,7 +156,8 @@
 					onmove: false,
 					sitting: false
 					});			
-					xxx._layers[2].objects.push(image);
+					xxx.AddObjectsToLayer({layer:xxx._layers[2], objects:[image]});
+					
 					var image2 = WE.xcreate({
 					tcode:"animationinstance",
 					x:200+50*x,
@@ -168,7 +169,7 @@
 					onmove: false,
 					sitting: false
 					});			
-					xxx._layers[1].objects.push(image2);
+					xxx.AddObjectsToLayer({layer:xxx._layers[1], objects:[image2]});
 					for(var y=0; y<100;y++){
 						var image3 = WE.xcreate({
 						tcode:"animationinstance",
@@ -179,7 +180,7 @@
 						msy: -80,
 						animation:anim_sit
 						});			
-						xxx._layers[0].objects.push(image3);
+						xxx.AddObjectsToLayer({layer:xxx._layers[0], objects:[image3]});
 					}
 				}
 				window.globc = 0;

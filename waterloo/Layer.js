@@ -61,20 +61,25 @@ WE.define('Waterloo.Graphics.Layer', Waterloo.WaterlooClass,{
 	},
 	
 	executeOver: function(f, contextName){
-		f(contextName?this._cachecanvas.createContext(contextName):this._cachecontext, this.engine, this);
+		var tempctx = contextName?this._cachecanvas.createContext(contextName):this._cachecontext;
+		tempctx.shiftX = this.shiftX;
+		tempctx.shiftY = this.shiftY;
+		f(tempctx, this.engine, this);
 		var ctxx = (contextName?this.canvas.createContext(contextName):this.defaultContext);
 		//ctxx.translate(-this.shiftX, -this.shiftY);
-		ctxx.drawImage(this._cachecanvas.canvas,0,0, this.width, this.height, -this.shiftX, -this.shiftY, this.width, this.height);
+		ctxx.drawImage(this._cachecanvas.canvas,0,0, this.width, this.height, 0, 0, this.width, this.height);
 		//ctxx.translate(this.shiftX, this.shiftY);
 	},
 	executeAllOver: function(f, contextName){
 		var ctx = contextName?this._cachecanvas.createContext(contextName):this._cachecontext;
+		ctx.shiftX = this.shiftX;
+		ctx.shiftY = this.shiftY;
 		for(var x in f){
 			f[x](ctx, this.engine, this);
 		}
 		var ctxx = (contextName?this.canvas.createContext(contextName):this.defaultContext);
 		//ctxx.translate(-this.shiftX, -this.shiftY);
-		ctxx.drawImage(this._cachecanvas.canvas,0,0, this.width, this.height, -this.shiftX, -this.shiftY, this.width, this.height);
+		ctxx.drawImage(this._cachecanvas.canvas,0,0, this.width, this.height, 0, 0, this.width, this.height);
 		//ctxx.translate(this.shiftX, this.shiftY);
 	},
 	invalidate: function(){
@@ -114,7 +119,7 @@ WE.define('Waterloo.Graphics.Canvas', Waterloo.WaterlooClass,{
 	},
 	
 	createContext: function(name){
-		return this.canvas.getContext(name);
+		return Waterloo.Graphics.ContextManager.createContext(this.canvas,name);
 	},
 	
 	appendTo: function(control){
@@ -122,3 +127,48 @@ WE.define('Waterloo.Graphics.Canvas', Waterloo.WaterlooClass,{
 			control.appendChild(this.canvas);
 	}
 });
+
+WE.define('Waterloo.Graphics.ContextManager', Waterloo.WaterlooClass,{
+	tcode:'contextmanager',
+	singleton: true,
+	contextFactories: MERGE({}),
+	createContext: function(canvas, context){
+		var cf = this.contextFactories[context];
+		if(cf==null) return null;
+		return cf(canvas);
+	}
+});
+
+WE.define('Waterloo.Graphics.Context2d', Waterloo.WaterlooClass,{
+	tcode:'context2d',
+	exports:{
+		contextFactories:{
+			'2d': function(canvas){
+				var ctx = canvas.getContext('2d');
+				var sctx = {
+					ctx: ctx,
+					shiftX: 0,
+					shiftY: 0,
+					drawImage: function(image, ox, oy, osx, osy, x, y, sx, sy){
+						this.ctx.drawImage(image, ox, oy, osx, osy, x-this.shiftX, y-this.shiftY, sx,sy);
+					},
+					save: function(){
+						this.ctx.save();
+					},
+					restore: function(){
+						this.ctx.restore();
+					},
+					setTransform: function(a,b,c,d,e,f){
+						this.ctx.setTransform(a,b,c,d,e,f);
+					},
+					clearRect: function(x,y,w,h){
+						this.ctx.clearRect(x,y,w,h);
+					}
+				}
+				return sctx;
+			}
+		}
+	}
+});
+
+WE.xcreate({tcode:'contextmanager+context2d'});

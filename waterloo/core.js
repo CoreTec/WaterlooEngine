@@ -550,7 +550,9 @@
 		//if class is already created or someone wants to cheat (won't do anything criminal, but looks bad to redefine ctor in config)
 		if(config&&(config.init!=null)) return config;
 		if(xclass==null){
-			return this._createByTCode(config.tcode, config);
+			var tcode = config.tcode;
+			tcode = tcode.replace(/\s+/g, '');
+			return this._createByTCode(tcode, config);
 		}
 		return this._createByClassName(xclass, config);
 	},

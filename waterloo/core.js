@@ -556,8 +556,16 @@
 		}
 		return this._createByClassName(xclass, config);
 	},
-	xcreate: function(config){
-		return WE.create(null, config);
+	xcreate: function(tcodeorcfg, config){
+		if(typeof tcodeorcfg == 'string'){
+			var cfg = config==null?{}:config;
+			cfg.tcode = tcodeorcfg;
+			return WE.create(null, cfg);
+		}
+		return WE.create(null, tcodeorcfg);
+	},
+	x: function(tcodeorcfg, config){
+		return this.xcreate(tcodeorcfg, config);
 	},
 	createArray: function(xclass, config){		
 		var items = config.items==null?config:config.items;

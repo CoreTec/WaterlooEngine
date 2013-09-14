@@ -147,10 +147,16 @@ WE.define('Waterloo.Graphics.Context2d', Waterloo.WaterlooClass,{
 				var ctx = canvas.getContext('2d');
 				var sctx = {
 					ctx: ctx,
+					sizeX: canvas.width,
+					sizeY: canvas.height,
 					shiftX: 0,
 					shiftY: 0,
 					drawImage: function(image, ox, oy, osx, osy, x, y, sx, sy){
-						this.ctx.drawImage(image, ox, oy, osx, osy, x-this.shiftX, y-this.shiftY, sx,sy);
+						
+						var drx = x-this.shiftX;
+						var dry = y-this.shiftY;
+						if((drx+sx>0&&this.sizeX>drx)||((dry+sy>0)&&(this.sizeY>dry)))
+							this.ctx.drawImage(image, ox, oy, osx, osy, drx, dry, sx,sy);
 					},
 					save: function(){
 						this.ctx.save();

@@ -14,6 +14,7 @@ WE.define('Waterloo.Graphics.LayerMaker2D', Waterloo.Module,{
 			zIndex: layercfg.z,
 			border: layercfg.border
 		};
+		layercfg.id=_input.oldlayers.length+_output.layers.length;
 		layercfg.canvas = canv;
 		layercfg.engine = e;
 		layercfg.canvasContainer = e._dom;

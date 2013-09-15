@@ -60,11 +60,16 @@ WE.define('Waterloo.Graphics.AnimationRender', Waterloo.Module,{
 		var maxPerFrame = this._maxPerFrame[lr.id];
 		var lastFrameObj = this._lastFrameObj[lr.id];
 		var cache = this._cache[lr.id];
-		var lastobj = Math.min(objs.length,lastFrameObj+maxPerFrame);
-		for(var x=lastFrameObj; x<lastobj; x++){		
+		var maxo = objs.length;
+		var lastobj = Math.min(maxo,lastFrameObj+maxPerFrame);
+		for(var x=lastFrameObj; (x<lastobj)&&(x<maxo); x++){		
 			var xx = objs[x];
+			if(!lr.boxInside(xx.x,xx.y,xx.width,xx.height)){
+				lastobj++;
+				continue;
+			}
 			var obj = xx.getFrame(time);
-			cache[x] = obj;			
+			cache[x] = obj;					
 		}
 		for(var x=0; x<cache.length;x++){
 			e.reApply(_output.todo, lr, cache[x]);

@@ -89,6 +89,11 @@ WE.define('Waterloo.Graphics.Layer', Waterloo.WaterlooClass,{
 		var res = (this.alwaysNeedsRedraw||this._needsRedraw)&&(!this.neverRedraw||this._firstframe);
 		this._firstframe = false;
 		return res;
+	},
+	boxInside: function(x,y,w,h){
+		var dx = x-this.shiftX;
+		var dy = y-this.shiftY;
+		return (dx+w>0&&this.width>dx)||((dy+h>0)&&(this.height>dy));
 	}
 });
 

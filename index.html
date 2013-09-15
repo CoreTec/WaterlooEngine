@@ -31,6 +31,8 @@
 					src:"images/coolskel.gif"});
 			var anim = WE.xcreate({
 				tcode:'animation',
+				width:47,
+				height:65,
 				defaults:{
 					src:"images/gyamon_idle.gif",
 					origin:MERGE({
@@ -78,6 +80,8 @@
 					}),
 					delay: 70
 				},
+				width:318/6,
+				height:64,
 				frames:[
 					{
 						origin:{cellx:0}
@@ -110,6 +114,8 @@
 					}),
 					delay: 500
 				},
+				width:94/2,
+				height:56,
 				frames:[
 					{
 						origin:{cellx:0},
@@ -170,7 +176,7 @@
 					sitting: false
 					});			
 					xxx.AddObjectsToLayer({layer:xxx._layers[1], objects:[image2]});
-					for(var y=0; y<600;y++){
+					for(var y=0; y<200;y++){
 						var image3 = WE.xcreate({
 						tcode:"animationinstance",
 						x:0+(y/10)*60,

@@ -35,6 +35,8 @@ WE.define('Waterloo.Graphics.AnimationInstance', Waterloo.WaterlooClass,{
 	//direct location on canvas
 	x:0,
 	y:0,
+	width:0,
+	height:0,
 	starttime: null,
 	_curframe: null,
 	_prevres: null,

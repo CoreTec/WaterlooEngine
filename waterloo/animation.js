@@ -22,10 +22,10 @@ WE.define('Waterloo.Graphics.Animation', Waterloo.WaterlooClass,{
 		var ret = null;
 		for(var x in this._frametimers){
 			if(this._frametimers[x]>frm)
-				return ret
+				return {item:ret, nexttime: msFromStart+this._frametimers[x]-frm};
 			ret = this.frames[x];	
 		}
-		return ret;
+		return {item:ret, nexttime:msFromStart+this._fulllength-frm};
 	}
 });
 
@@ -37,6 +37,7 @@ WE.define('Waterloo.Graphics.AnimationInstance', Waterloo.WaterlooClass,{
 	y:0,
 	starttime: null,
 	_curframe: null,
+	_prevres: null,
 	_nextframetime: 0,
 	// //direct size
 	// //make a ratio later
@@ -46,14 +47,17 @@ WE.define('Waterloo.Graphics.AnimationInstance', Waterloo.WaterlooClass,{
 		if(this.starttime==null) this.starttime = currenttime-0;
 		var mg = null;
 		var dt = currenttime - this.starttime;
+		var result = null;
 		if(this._nextframetime>currenttime)
-			mg = this._curframe;
+			mg = this._curframe;			
 		else{
 			mg = this.animation.getFrame(dt);
-			this._curframe = mg;
-			this._nextframetime = -1;
+			this._curframe = mg.item;			
+			this._nextframetime = mg.nexttime;
+			mg = mg.item;
+			this._prevres = Waterloo.Graphics.ObjectActivator.createInstance(mg);
 		}
-		var result = Waterloo.Graphics.ObjectActivator.createInstance(mg);
+		result = this._prevres;
 		result.x = this.x-(mg.frameShX==null?0:mg.frameShX);
 		result.y = this.y-(mg.frameShY==null?0:mg.frameShY);
 		result.width = mg.origin.width;

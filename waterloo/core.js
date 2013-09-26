@@ -20,6 +20,10 @@
 	var cfg = config;
 	cfg.__apply_recursive = true;
 	return cfg;
+  };
+  this.ALIAS = function(propname){
+	var cfg = {ALIAS:true, prop:propname};
+	return cfg;
   }
   //apply with clones
   this.WE.apply = function(ar1,ar2,recursives){
@@ -246,37 +250,57 @@
 		'f = function(){',
 		//'this._super();',
 		'var _temp=null;'];
+		var late = [];
+		var early =[];
+		var normal = [];
 		for(var x in props){
 			var prop = props[x];
 			if(!prop) continue;
 			if(prop.CONST) continue;
 			if(typeof prop == "function") continue;
 			if(WE.onClassPropCtor){
-				var evout = {todo:[], ignore:false, handled:false};
+				var evout = {todo:[], ignore:false, handled:false, late:false, early: false};
 				WE.onClassPropCtor(props, x, evout);
 				if(evout.fail) continue;
-				WE.apply(strs, evout.todo);
+				if(evout.late) {
+					WE.apply(late, evout.todo);
+					continue;
+				}
+				if(evout.early){
+					WE.apply(early, evout.todo);
+					continue;
+				}
+				WE.apply(normal, evout.todo);
 				if(evout.handled) continue;
+			}
+			if(prop.ALIAS){
+				var prp = 'this["'+x+'"]';
+				var pra = 'this["'+prop.prop+'"]';
+				late.push(prp+'='+pra+';');
+				continue;
 			}
 			if(prop instanceof Array){
 				var prp = 'this["'+x+'"]';
-				strs.push('_temp='+prp+';');
-				strs.push(prp+'=[];');
-				strs.push('for(var ___ in _temp){');
-				strs.push(prp+'.push(_temp[___]);');
-				strs.push('}');
+				normal.push('_temp='+prp+';');
+				normal.push(prp+'=[];');
+				normal.push('for(var ___ in _temp){');
+				normal.push(prp+'.push(_temp[___]);');
+				normal.push('}');
 				continue;
 			}
 			if(prop instanceof Object){
 				var prp = 'this["'+x+'"]';
-				strs.push('_temp='+prp+';');
-				strs.push(prp+'={};');
-				strs.push('for(var ___ in _temp){');
-				strs.push(prp+'[___]=_temp[___];');
-				strs.push('}');
+				normal.push('_temp='+prp+';');
+				normal.push(prp+'={};');
+				normal.push('for(var ___ in _temp){');
+				normal.push(prp+'[___]=_temp[___];');
+				normal.push('}');
 				continue;
 			}
 		}
+		WE.apply(strs, early);
+		WE.apply(strs, normal);
+		WE.apply(strs, late);
 		strs.push('}');
 		eval(strs.join('\n'));
 		return f;
@@ -556,8 +580,16 @@
 		}
 		return this._createByClassName(xclass, config);
 	},
-	xcreate: function(config){
-		return WE.create(null, config);
+	xcreate: function(tcodeorcfg, config){
+		if(typeof tcodeorcfg == 'string'){
+			var cfg = config==null?{}:config;
+			cfg.tcode = tcodeorcfg;
+			return WE.create(null, cfg);
+		}
+		return WE.create(null, tcodeorcfg);
+	},
+	x: function(tcodeorcfg, config){
+		return this.xcreate(tcodeorcfg, config);
 	},
 	createArray: function(xclass, config){		
 		var items = config.items==null?config:config.items;

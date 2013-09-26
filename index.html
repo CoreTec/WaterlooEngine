@@ -6,17 +6,17 @@
 		<script src="waterloo/core.js" type="text/javascript" charset="utf-8"></script>
 		<script src="waterloo/modular.js" type="text/javascript" charset="utf-8"></script>
 		<script src="waterloo/module.js" type="text/javascript" charset="utf-8"></script>
-		<script src="waterloo/objectactivator.js" type="text/javascript" charset="utf-8"></script>
-		<script src="waterloo/image.js" type="text/javascript" charset="utf-8"></script>
+		<script src="waterloo/ObjectActivator.js" type="text/javascript" charset="utf-8"></script>
+		<script src="waterloo/Image.js" type="text/javascript" charset="utf-8"></script>
 		<script src="waterloo/animation.js" type="text/javascript" charset="utf-8"></script>
 		<script src="waterloo/Layer.js" type="text/javascript" charset="utf-8"></script>
 		<script src="waterloo/Mouse.js" type="text/javascript" charset="utf-8"></script>		
 		<script src="waterloo/RenderEngine.js" type="text/javascript" charset="utf-8"></script>
 		<script src="waterloo/ImageRender.js" type="text/javascript" charset="utf-8"></script>
 		<script src="waterloo/LayerMaker.js" type="text/javascript" charset="utf-8"></script>
-		<script src="waterloo/mouselayer.js" type="text/javascript" charset="utf-8"></script>
-		<script src="waterloo/layerclear.js" type="text/javascript" charset="utf-8"></script>
-		<script src="waterloo/layervalidator.js" type="text/javascript" charset="utf-8"></script>
+		<script src="waterloo/Mouselayer.js" type="text/javascript" charset="utf-8"></script>
+		<script src="waterloo/LayerClear.js" type="text/javascript" charset="utf-8"></script>
+		<script src="waterloo/LayerValidator.js" type="text/javascript" charset="utf-8"></script>
 		<script src="waterloo/AnimationRender.js" type="text/javascript" charset="utf-8"></script>
 		<script src="waterloo/debug_diagnostics.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript" charset="utf-8">
@@ -31,6 +31,8 @@
 					src:"images/coolskel.gif"});
 			var anim = WE.xcreate({
 				tcode:'animation',
+				width:47,
+				height:65,
 				defaults:{
 					src:"images/gyamon_idle.gif",
 					origin:MERGE({
@@ -78,6 +80,8 @@
 					}),
 					delay: 70
 				},
+				width:318/6,
+				height:64,
 				frames:[
 					{
 						origin:{cellx:0}
@@ -108,8 +112,10 @@
 						cellHeight:56,
 						celly:0
 					}),
-					delay: 1000
+					delay: 500
 				},
+				width:94/2,
+				height:56,
 				frames:[
 					{
 						origin:{cellx:0},
@@ -132,7 +138,7 @@
 			  })();
 			setTimeout(function(){
 				//alert('start');
-				var xxx = WE.xcreate({tcode:"renderengine+layermaker2d+imagerender+mouselayermaker+layerclearer+layervalidator+animationrender", domId:'pp'});
+				var xxx = WE.x("renderengine+layermaker2d+imagerender+mouselayermaker+layerclearer+layervalidator+animationrender", {domId:'pp'});
 				xxx.addLayer({tcode:'layer', width:1000, height:1000});
 				xxx.addLayer({tcode:'layer', width:1000, height:1000});
 				xxx.addLayer({tcode:'layer', width:1000, height:1000});
@@ -170,7 +176,7 @@
 					sitting: false
 					});			
 					xxx.AddObjectsToLayer({layer:xxx._layers[1], objects:[image2]});
-					for(var y=0; y<100;y++){
+					for(var y=0; y<200;y++){
 						var image3 = WE.xcreate({
 						tcode:"animationinstance",
 						x:0+(y/10)*60,
@@ -209,14 +215,14 @@
 							var followobj = xxx._layers[1].objects[0];
 							lr.pnsx = lr.pnsx?lr.pnsx:0;
 							lr.pnsy = lr.pnsy?lr.pnsy:0;
-							var dx = followobj.x - lr.pnsx;
-							var dy = followobj.y - lr.pnsy;
+							var dx = followobj.x*1/26 + lr.pnsx*25/26;
+							var dy = followobj.y*1/26 + lr.pnsy*25/26;
 							var dsx = Math.sqrt(dx*dx+dy*dy);
 							dsx = Math.max(dsx, speed);
 							var difx = speed*dx/dsx;
 							var dify = speed*dy/dsx;
-							lr.pnsx=lr.pnsx+difx;
-							lr.pnsy=lr.pnsy+dify;
+							lr.pnsx=dx;
+							lr.pnsy=dy;
 							lr.shiftX = lr.pnsx-500;
 							lr.shiftY = lr.pnsy-500;
 							

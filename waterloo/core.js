@@ -24,7 +24,11 @@
   this.ALIAS = function(propname){
 	var cfg = {ALIAS:true, prop:propname};
 	return cfg;
-  }
+  };
+  this.SOFTALIAS = function(propname,isprop){
+	var cfg = {SOFTALIAS:true, prop:propname, isprop:isprop};
+	return cfg;
+  };
   //apply with clones
   this.WE.apply = function(ar1,ar2,recursives){
 	//if this is two arrays - just join them
@@ -274,9 +278,22 @@
 				if(evout.handled) continue;
 			}
 			if(prop.ALIAS){
-				var prp = 'this["'+x+'"]';
-				var pra = 'this["'+prop.prop+'"]';
+				var prp = 'this.'+x;
+				var pra = 'this.'+prop.prop;
 				late.push(prp+'='+pra+';');
+				continue;
+			}
+			if(prop.SOFTALIAS){
+				var prp = 'this.'+x;
+				var prf = 'this.'+prop.prop;
+				var pra = prf.substring(0,prf.lastIndexOf('.'));
+				
+				if(!prop.isprop){					
+					late.push(prp+'=function(){return '+prf+'.apply('+pra+',arguments);};');
+				}
+				else{
+					late.push(prp+'=function(){return '+prf+';');
+				}
 				continue;
 			}
 			if(prop instanceof Array){
@@ -673,6 +690,16 @@
 		}
 		
 		Waterloo.X.registerClass(tcode,obj);
+	},
+	makeWaterlooClass: function(cfg){
+		return WE.create(Waterloo.WaterlooClass, cfg);
+	},
+	makeOneTimeClass: function(cfg){
+		cfg.__isAbstract = true;
+		WE.define('Waterloo.TEMPORARY.abstractClass', Waterloo.WaterlooClass, cfg);
+		var rf = WE.create('Waterloo.TEMPORARY.abstractClass',{});
+		Waterloo.TEMPORARY.abstractClass = null;
+		return rf;
 	}
   });
   this.WaterlooEngine = new this.WaterlooEngine;

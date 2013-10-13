@@ -23,6 +23,17 @@
 			//Waterloo.Diagnostics.TimeProfileManager.startProfile('GraphicsTest');
 			//Waterloo.Diagnostics.TimeProfileManager.applyToNamespace(Waterloo);
 			//WE._logmode = true;
+			
+			WE.define('MyOwnClass', Waterloo.WaterlooClass,{
+				px: {
+					f: function(a){
+						console.log(a+this.x);
+					},
+					x: 10
+				},
+				ff: SOFTALIAS('px.f')
+			});
+			
 			var mg =  WE.xcreate({
 					tcode:"image",
 					src:"images/gyamon_down.gif"});			
